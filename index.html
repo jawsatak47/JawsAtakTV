@@ -8,13 +8,13 @@
   @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Space+Mono:wght@400;700&display=swap');
 
   :root{
-    --bg:#0a0a0a;
-    --bg-panel:#111412;
-    --line:#2a2f2c;
-    --ink:#e9f7ec;
-    --dim:#8a978d;
-    --green:#39ff8f;
-    --green-dim:#1c7a49;
+    --bg:#040810;
+    --bg-panel:#0d1728;
+    --line:#16243d;
+    --ink:#e6f0ff;
+    --dim:#6b82a6;
+    --red:#ff2a4b;
+    --red-dim:#801020;
   }
 
   *{box-sizing:border-box;}
@@ -23,8 +23,8 @@
     margin:0;
     background:var(--bg);
     background-image:
-      linear-gradient(rgba(57,255,143,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(57,255,143,0.035) 1px, transparent 1px);
+      linear-gradient(rgba(255, 42, 75, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 42, 75, 0.04) 1px, transparent 1px);
     background-size: 42px 42px;
     color:var(--ink);
     font-family:'Space Mono', monospace;
@@ -44,8 +44,8 @@
     line-height:0.9;
     letter-spacing:1px;
     display:inline-block;
-    color:var(--green);
-    text-shadow:0 0 18px rgba(57,255,143,0.35);
+    color:var(--red);
+    text-shadow:0 0 18px rgba(255, 42, 75, 0.35);
   }
 
   .tagline{
@@ -62,8 +62,8 @@
   .count-strip{
     margin-top:20px;
     display:inline-block;
-    border:1px solid var(--green-dim);
-    color:var(--green);
+    border:1px solid var(--red-dim);
+    color:var(--red);
     padding:6px 16px;
     font-size:0.75rem;
     letter-spacing:0.08em;
@@ -86,41 +86,45 @@
     background:var(--bg-panel);
     padding:12px 12px 16px;
     border:1px solid var(--line);
-    transition:border-color 0.2s ease;
+    transition:border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
   .clip-card:hover{
-    border-color:var(--green-dim);
+    border-color:var(--red);
+    box-shadow:0 0 15px rgba(255, 42, 75, 0.15);
   }
 
-  .thumb-link{
+  .thumb-button{
     display:block;
+    width:100%;
     position:relative;
     overflow:hidden;
     border:1px solid var(--line);
     aspect-ratio:16/9;
-    background:#1a1d1b;
+    background:#080e1a;
+    padding:0;
+    cursor:pointer;
   }
 
-  .thumb-link img{
+  .thumb-button img{
     width:100%;
     height:100%;
     object-fit:cover;
     display:block;
-    filter:grayscale(0.15) contrast(1.05);
+    filter:grayscale(0.2) contrast(1.05);
     transition:filter 0.3s ease;
   }
 
-  .thumb-link:hover img{
+  .thumb-button:hover img{
     filter:grayscale(0) contrast(1.1);
   }
 
-  .thumb-link::after{
-    content:"WATCH CLIP →";
+  .thumb-button::after{
+    content:"PLAY VIDEO ▶";
     position:absolute;
     inset:auto 0 0 0;
-    background:var(--green);
-    color:#06110a;
+    background:var(--red);
+    color:#040810;
     font-family:'Space Mono', monospace;
     font-weight:700;
     font-size:0.7rem;
@@ -131,7 +135,7 @@
     transition:transform 0.2s ease;
   }
 
-  .thumb-link:hover::after{
+  .thumb-button:hover::after{
     transform:translateY(0);
   }
 
@@ -143,7 +147,7 @@
     font-family:'Rajdhani', sans-serif;
     font-weight:700;
     font-size:1.1rem;
-    color:var(--green-dim);
+    color:var(--red);
     line-height:1;
   }
 
@@ -162,6 +166,65 @@
     color:var(--dim);
   }
 
+  /* Video Modal Window */
+  .modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    background:rgba(4, 8, 16, 0.92);
+    backdrop-filter:blur(6px);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+
+  .modal.active{
+    display:flex;
+  }
+
+  .modal-content{
+    position:relative;
+    width:100%;
+    max-width:900px;
+    background:var(--bg-panel);
+    border:1px solid var(--red);
+    padding:16px;
+    box-shadow:0 0 35px rgba(255, 42, 75, 0.25);
+  }
+
+  .video-container{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    background:#000;
+  }
+
+  .video-container iframe{
+    width:100%;
+    height:100%;
+    border:none;
+  }
+
+  .close-btn{
+    position:absolute;
+    top:-40px;
+    right:0;
+    background:transparent;
+    border:1px solid var(--red);
+    color:var(--red);
+    font-family:'Space Mono', monospace;
+    font-size:0.8rem;
+    padding:6px 12px;
+    cursor:pointer;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+
+  .close-btn:hover{
+    background:var(--red);
+    color:var(--bg);
+  }
+
   footer{
     max-width:1200px;
     margin:60px auto 0;
@@ -173,7 +236,7 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .thumb-link img, .thumb-link::after{ transition:none; }
+    .thumb-button img, .thumb-button::after{ transition:none; }
   }
 </style>
 </head>
@@ -189,6 +252,15 @@
   <div class="grid" id="clip-grid"></div>
 </main>
 
+<div class="modal" id="video-modal">
+  <div class="modal-content">
+    <button class="close-btn" id="close-modal">CLOSE [X]</button>
+    <div class="video-container">
+      <iframe id="video-player" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
 <footer>
   QuarkForce © <span id="year"></span> — new footage added as it renders.
 </footer>
@@ -196,26 +268,22 @@
 <script>
   // ---------------------------------------------------------------
   // EDIT THIS LIST to add or update your video clips.
-  //   thumbnail: path or URL to the thumbnail image (16:9 recommended)
-  //   title:     title of the video clip
-  //   blurb:     short description of the video content
-  //   link:      destination URL (YouTube, Vimeo, Patreon, MP4 link, etc.)
   // ---------------------------------------------------------------
   const CLIPS = [
     { 
-      thumbnail: "CanvasWars June2026", 
+      thumbnail: "CanvasWars June2026.png", 
       title: "CanvasWars June2026", 
-      blurb: "Complete event from prep to prize delivery!.", 
+      blurb: "Complete event from prep to prize delivery!", 
       link: "https://youtu.be/v8CcaCUMK5k?si=NLBhqqXmu7aV3IaQ" 
     },
     { 
-      thumbnail: "Art for CanvasWars MonsTober", 
+      thumbnail: "Art for CanvasWars MonsTober.png", 
       title: "Art for CanvasWars MonsTober", 
       blurb: "Phoenix Phoodery October 3 2026.", 
       link: "https://youtu.be/vdR-tQ_SYzw?si=EwOhN1vKO0ShpccM" 
     },
     { 
-      thumbnail: "Masters of the Way -Wisdom", 
+      thumbnail: "Masters of the Way -Wisdom.png", 
       title: "Masters of the Way -Wisdom", 
       blurb: "Wisdom to meditate to.", 
       link: "https://youtu.be/jVqm59BEenI?si=uxoI2orYQDKJmoVy" 
@@ -224,18 +292,33 @@
 
   const grid = document.getElementById("clip-grid");
   const countStrip = document.getElementById("clip-count");
+  const modal = document.getElementById("video-modal");
+  const player = document.getElementById("video-player");
+  const closeBtn = document.getElementById("close-modal");
 
-  // Update dynamic count bar
+  // Update counter display
   countStrip.textContent = `${CLIPS.length} CLIPS ARCHIVED`;
+
+  // Convert standard YouTube links to embed links for the popup window
+  function getEmbedUrl(url) {
+    if (url.includes("youtu.be/")) {
+      const id = url.split("youtu.be/")[1].split("?")[0];
+      return `https://www.youtube.com/embed/${id}?autoplay=1`;
+    } else if (url.includes("watch?v=")) {
+      const id = url.split("watch?v=")[1].split("&")[0];
+      return `https://www.youtube.com/embed/${id}?autoplay=1`;
+    }
+    return url;
+  }
 
   CLIPS.forEach((clip, i) => {
     const num = String(i + 1).padStart(2, "0");
     const card = document.createElement("div");
     card.className = "clip-card";
     card.innerHTML = `
-      <a class="thumb-link" href="${clip.link}" target="_blank" rel="noopener">
+      <button class="thumb-button" onclick="openVideo('${clip.link}')">
         <img src="${clip.thumbnail}" alt="Thumbnail for ${clip.title}" loading="lazy">
-      </a>
+      </button>
       <div class="clip-meta">
         <div class="clip-num">CLIP NO. ${num}</div>
         <div class="clip-title">${clip.title}</div>
@@ -243,6 +326,31 @@
       </div>
     `;
     grid.appendChild(card);
+  });
+
+  function openVideo(url) {
+    const embedUrl = getEmbedUrl(url);
+    player.src = embedUrl;
+    modal.classList.add("active");
+  }
+
+  function closeVideo() {
+    modal.classList.remove("active");
+    player.src = "";
+  }
+
+  closeBtn.addEventListener("click", closeVideo);
+  
+  // Close modal when clicking outside content area
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeVideo();
+  });
+
+  // Close modal with Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("active")) {
+      closeVideo();
+    }
   });
 
   document.getElementById("year").textContent = new Date().getFullYear();
