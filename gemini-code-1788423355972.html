@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuarkForce — Video Vault</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Space+Mono:wght@400;700&display=swap');
+
+  :root{
+    --bg:#0a0a0a;
+    --bg-panel:#111412;
+    --line:#2a2f2c;
+    --ink:#e9f7ec;
+    --dim:#8a978d;
+    --green:#39ff8f;
+    --green-dim:#1c7a49;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      linear-gradient(rgba(57,255,143,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57,255,143,0.035) 1px, transparent 1px);
+    background-size: 42px 42px;
+    color:var(--ink);
+    font-family:'Space Mono', monospace;
+    padding:0 0 80px;
+  }
+
+  header{
+    padding:56px 24px 40px;
+    text-align:center;
+    position:relative;
+  }
+
+  .masthead{
+    font-family:'Rajdhani', sans-serif;
+    font-weight:700;
+    font-size:clamp(2.6rem, 9vw, 5.2rem);
+    line-height:0.9;
+    letter-spacing:1px;
+    display:inline-block;
+    color:var(--green);
+    text-shadow:0 0 18px rgba(57,255,143,0.35);
+  }
+
+  .tagline{
+    margin-top:20px;
+    font-size:0.9rem;
+    color:var(--dim);
+    letter-spacing:0.02em;
+    max-width:480px;
+    margin-left:auto;
+    margin-right:auto;
+    line-height:1.6;
+  }
+
+  .count-strip{
+    margin-top:20px;
+    display:inline-block;
+    border:1px solid var(--green-dim);
+    color:var(--green);
+    padding:6px 16px;
+    font-size:0.75rem;
+    letter-spacing:0.08em;
+  }
+
+  main{
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:34px 28px;
+  }
+
+  .clip-card{
+    position:relative;
+    background:var(--bg-panel);
+    padding:12px 12px 16px;
+    border:1px solid var(--line);
+    transition:border-color 0.2s ease;
+  }
+
+  .clip-card:hover{
+    border-color:var(--green-dim);
+  }
+
+  .thumb-link{
+    display:block;
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--line);
+    aspect-ratio:16/9;
+    background:#1a1d1b;
+  }
+
+  .thumb-link img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    filter:grayscale(0.15) contrast(1.05);
+    transition:filter 0.3s ease;
+  }
+
+  .thumb-link:hover img{
+    filter:grayscale(0) contrast(1.1);
+  }
+
+  .thumb-link::after{
+    content:"WATCH CLIP →";
+    position:absolute;
+    inset:auto 0 0 0;
+    background:var(--green);
+    color:#06110a;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size:0.7rem;
+    letter-spacing:0.04em;
+    text-align:center;
+    padding:8px 0;
+    transform:translateY(100%);
+    transition:transform 0.2s ease;
+  }
+
+  .thumb-link:hover::after{
+    transform:translateY(0);
+  }
+
+  .clip-meta{
+    padding-top:14px;
+  }
+
+  .clip-num{
+    font-family:'Rajdhani', sans-serif;
+    font-weight:700;
+    font-size:1.1rem;
+    color:var(--green-dim);
+    line-height:1;
+  }
+
+  .clip-title{
+    font-family:'Rajdhani', sans-serif;
+    font-weight:700;
+    font-size:1.25rem;
+    margin:4px 0 8px;
+    line-height:1.1;
+    color:var(--ink);
+  }
+
+  .clip-blurb{
+    font-size:0.8rem;
+    line-height:1.55;
+    color:var(--dim);
+  }
+
+  footer{
+    max-width:1200px;
+    margin:60px auto 0;
+    padding:0 24px;
+    font-size:0.75rem;
+    color:var(--dim);
+    border-top:1px solid var(--line);
+    padding-top:18px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .thumb-link img, .thumb-link::after{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="masthead">VIDEO VAULT</div>
+  <p class="tagline">Video archives, field footage, and visual dispatches from the QuarkForce terminal.</p>
+  <div class="count-strip" id="clip-count">0 CLIPS ARCHIVED</div>
+</header>
+
+<main>
+  <div class="grid" id="clip-grid"></div>
+</main>
+
+<footer>
+  QuarkForce © <span id="year"></span> — new footage added as it renders.
+</footer>
+
+<script>
+  // ---------------------------------------------------------------
+  // EDIT THIS LIST to add or update your video clips.
+  //   thumbnail: path or URL to the thumbnail image (16:9 recommended)
+  //   title:     title of the video clip
+  //   blurb:     short description of the video content
+  //   link:      destination URL (YouTube, Vimeo, Patreon, MP4 link, etc.)
+  // ---------------------------------------------------------------
+  const CLIPS = [
+    { 
+      thumbnail: "thumb1.png", 
+      title: "Monster Island Dispatch", 
+      blurb: "Raw footage captured near the northern shoreline.", 
+      link: "https://youtube.com" 
+    },
+    { 
+      thumbnail: "thumb2.png", 
+      title: "Neon Waterplant Probe", 
+      blurb: "Submersible camera feeds from Sector 4.", 
+      link: "https://youtube.com" 
+    },
+    { 
+      thumbnail: "thumb3.png", 
+      title: "Quark Force Protocol", 
+      blurb: "System boot sequences and live test runs.", 
+      link: "https://youtube.com" 
+    }
+  ];
+
+  const grid = document.getElementById("clip-grid");
+  const countStrip = document.getElementById("clip-count");
+
+  // Update dynamic count bar
+  countStrip.textContent = `${CLIPS.length} CLIPS ARCHIVED`;
+
+  CLIPS.forEach((clip, i) => {
+    const num = String(i + 1).padStart(2, "0");
+    const card = document.createElement("div");
+    card.className = "clip-card";
+    card.innerHTML = `
+      <a class="thumb-link" href="${clip.link}" target="_blank" rel="noopener">
+        <img src="${clip.thumbnail}" alt="Thumbnail for ${clip.title}" loading="lazy">
+      </a>
+      <div class="clip-meta">
+        <div class="clip-num">CLIP NO. ${num}</div>
+        <div class="clip-title">${clip.title}</div>
+        <div class="clip-blurb">${clip.blurb}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
